@@ -39,6 +39,7 @@ CREATE TABLE T05_Quiz_Respostas (
 );
 
 CREATE TABLE T06_Progresso_Usuario_Quiz (
+	A06_Id int primary key auto_increment,
 	A06_Id_T01_Usuario int not null,
     A06_Id_T03_Quiz int not null,
     A06_Nota_Quiz Decimal(5,2),

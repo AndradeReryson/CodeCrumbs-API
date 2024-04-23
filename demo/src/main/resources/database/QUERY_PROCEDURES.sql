@@ -17,6 +17,13 @@ BEGIN
     /* Insere as credenciais do usuário na T02 usando o email, senha e o Id*/
     INSERT INTO T02_Credenciais (A02_Id_T01_Usuario, A02_Email, A02_Senha)
     VALUES (var_id, param_email, param_senha);
+    
+    /*Retorno do objeto criado */
+    SELECT t01.A01_Id, t01.A01_Apelido, t02.A02_Email, t02.A02_Senha
+    FROM t01_usuario t01
+    INNER JOIN t02_credenciais t02
+    ON t01.A01_Id = t02.A02_Id_T01_Usuario
+    WHERE t01.A01_Id = var_id;
 END $$
 DELIMITER ;
 
