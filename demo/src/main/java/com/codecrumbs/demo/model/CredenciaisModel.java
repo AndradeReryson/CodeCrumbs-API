@@ -36,4 +36,10 @@ public class CredenciaisModel {
 
     @Column(name = "A02_Senha", length = 64)
     private String senha;
+
+    public CredenciaisModel(UsuarioModel id_usuario, String email, String senha){
+        this.id_usuario = id_usuario;
+        this.email = email;
+        this.senha = senha;
+    }
 }
