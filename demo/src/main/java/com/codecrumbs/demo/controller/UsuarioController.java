@@ -68,8 +68,12 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<UsuarioModel> login(@RequestBody @Valid UsuarioLoginDTO dto){
+
+        /**
+         * Terminar de arrumar a procedure de login, que deve devolver um erro caso o login falhe
+         */
         Optional<UsuarioModel> usuario = repository.fazerLogin(dto.getEmail(), dto.getSenha());
 
         if(usuario.isPresent()){

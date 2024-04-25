@@ -1,7 +1,6 @@
 package com.codecrumbs.demo.dto.mapper;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,8 @@ public class UsuarioMapper {
         UsuarioModel usuario;
         usuario = mapper.map(dto, UsuarioModel.class);
 
-        CredenciaisModel cred = new CredenciaisModel(usuario, dto.getEmail(), dto.getSenha());
+        CredenciaisModel cred;
+        cred = usuario.getCredenciais();
         usuario = mapper.map(cred, UsuarioModel.class);
         
         /* Continuar amanhã:

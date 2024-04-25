@@ -16,7 +16,4 @@ public class UsuarioBasicoDTO {
 
     @NotBlank
     private String email;
-
-    @NotBlank
-    private String senha;
 }

@@ -52,8 +52,10 @@ BEGIN
 	IF EXISTS (SELECT * FROM t02_credenciais where A02_Email = param_email AND A02_Senha = param_senha) then
 		SELECT A02_Id_T01_Usuario INTO var_id from t02_credenciais where A02_Email = param_email AND A02_Senha = param_senha;
         
-        SELECT A01_Apelido, A01_Id from t01_usuario where A01_Id = var_id;
+        SELECT * from t01_usuario where A01_Id = var_id;
 	END IF;
 END $$
 DELIMITER ;
+
+CALL proc_fazer_login("l@l.com", "12345678");
 	
