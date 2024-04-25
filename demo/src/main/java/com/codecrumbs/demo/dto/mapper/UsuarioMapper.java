@@ -1,6 +1,7 @@
 package com.codecrumbs.demo.dto.mapper;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,10 @@ public class UsuarioMapper {
 
     public UsuarioBasicoDTO toUsuarioBasicoDTO(UsuarioModel usuario){
         UsuarioBasicoDTO dto;
-        dto = mapper.map(usuario, UsuarioBasicoDTO.class);
+
         dto = mapper.map(usuario.getCredenciais(), UsuarioBasicoDTO.class);
-        /*
-         * Erro: o apelido não está sendo mapeado, testar amanhã
-         */
+        mapper.map(usuario, dto);
+        
         return dto;
     }
 

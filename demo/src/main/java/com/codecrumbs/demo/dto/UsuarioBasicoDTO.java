@@ -1,7 +1,5 @@
 package com.codecrumbs.demo.dto;
 
-import com.codecrumbs.demo.model.CredenciaisModel;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;

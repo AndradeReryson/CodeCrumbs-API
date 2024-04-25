@@ -48,10 +48,10 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> newUsuario(@RequestBody @Valid UsuarioCreateDTO dto){
+    public ResponseEntity<String> newUsuario(@RequestBody @Valid UsuarioCreateDTO dto){
         try{
             Optional<UsuarioModel> novoUsuario = repository.cadastrarUsuario(dto.getEmail(), dto.getSenha(), dto.getApelido());
-            return ResponseEntity.status(201).body(novoUsuario.get());
+            return ResponseEntity.status(201).body("Cadastrado com Sucesso");
         } 
         catch(Throwable e){
             String msg_error = e.getMessage();
@@ -64,7 +64,7 @@ public class UsuarioController {
                 return ResponseEntity.status(409).body("Email já está em uso");
             }
 
-            return ResponseEntity.status(409).body("Erro interno ao realizar cadastro");
+            return ResponseEntity.status(409).body("Erro: "+msg_error);
         }
     }
 
