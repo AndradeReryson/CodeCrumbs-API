@@ -39,8 +39,6 @@ root:BEGIN
 END $$
 DELIMITER ;
 
-CALL proc_cadastrar_usuario("l@l.com", "12345678", "lucas");
-
 DELIMITER $$
 CREATE PROCEDURE proc_fazer_login(
 IN param_email varchar(255),
@@ -57,5 +55,4 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL proc_fazer_login("l@l.com", "12345678");
 	
