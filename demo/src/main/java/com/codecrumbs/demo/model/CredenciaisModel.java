@@ -1,5 +1,8 @@
 package com.codecrumbs.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +32,7 @@ public class CredenciaisModel {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "A02_Id_T01_Usuario", nullable = false)
+    @JsonBackReference
     private UsuarioModel id_usuario;
 
     @Column(name = "A02_Email", length = 255)

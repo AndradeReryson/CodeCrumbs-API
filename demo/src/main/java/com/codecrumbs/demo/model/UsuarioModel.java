@@ -2,6 +2,8 @@ package com.codecrumbs.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +35,7 @@ public class UsuarioModel{
     private String apelido;
 
     @OneToOne(mappedBy = "id_usuario")
+    @JsonManagedReference
     private CredenciaisModel credenciais;
 
     @OneToMany(mappedBy = "criador", cascade = CascadeType.ALL, orphanRemoval = true)
