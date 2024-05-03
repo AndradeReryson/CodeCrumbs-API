@@ -1,17 +1,24 @@
 package com.codecrumbs.demo.controller;
 
+import java.math.BigDecimal;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.apache.catalina.connector.Response;
 import org.hibernate.JDBCException;
 import org.hibernate.exception.GenericJDBCException;
 import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +39,7 @@ import com.codecrumbs.demo.exceptions.EmailAlreadyUsedException;
 import com.codecrumbs.demo.exceptions.InvalidCredentialsException;
 import com.codecrumbs.demo.model.UsuarioModel;
 import com.codecrumbs.demo.repository.UsuarioRepository;
+import com.codecrumbs.enumeracao.LinguagemEnum;
 
 import jakarta.validation.Valid;
 
@@ -46,6 +54,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioMapper mapper;
 
+    /* JDBC vai ser usado no DTO do dashboard, já que ele não é um model do banco, o JPA não consegue lidar com ele*/ 
     @Autowired
     private JdbcTemplate jdbc;
 
@@ -97,5 +106,39 @@ public class UsuarioController {
 
             throw new IllegalStateException("Erro: "+msg_error);
         }
+    }
+
+    @GetMapping("{id}/dashboard")
+    public ResponseEntity<DashboardProgressoDTO> getDashboardInfo(@PathVariable("id") Long id){
+        /* 
+         * Não foi possível usar o JPARepository nesse método, pois o DTO do dashboard não possui uma tabela no banco
+         * Assim foi necessário fazer a injeção do JdbcTemplate para realizar requisições manuais ao banco
+         * Abaixo, é feita uma call simplificada ao procedure que calcula os dados do DTO passando o Id do usuário
+         */
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbc)
+            .withSchemaName("codecrumbs")
+            .withProcedureName("proc_carregar_dashboard");
+
+        /* Executando a Query e passando um parametro (id do usuário) para a procedure */
+        SqlParameterSource in = new MapSqlParameterSource().addValue("param_id", id);
+        
+        /* Com o resultado da query (in) mapeamos os parametros de saida OUT da procedure para um json
+         * Esse json é chamado de (out) e cada chave dele traz um valor OUT da procedure
+         */
+        Map<String, Object> out = call.execute(in);
+
+
+        /* Criamos um objeto DTO e setamos manualmente os dados dele com os do json (out) usando o out.get(chave)
+         * Essa chave é o nome do parametro de saida OUT lá na procedure.
+         */
+        DashboardProgressoDTO dto = new DashboardProgressoDTO();
+        dto.setPercQuizzesConcluidos((BigDecimal) out.get("porcent_quizzes"));
+        dto.setPercExerciciosConcluidos((BigDecimal) out.get("porcent_exercicios"));
+        dto.setTotalFlashCards((Integer) out.get("quant_flashcards"));
+        dto.setLinguagemFavorita(
+            LinguagemEnum.valueOf((String) out.get("linguagem_favorita"))
+        );
+
+        return ResponseEntity.status(200).body(dto);
     }
 }

@@ -1,5 +1,7 @@
 package com.codecrumbs.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class FlashCartaoModel {
     private String verso_definicao;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A08_Id_T07_Flashcard_baralho", nullable = false)
     private FlashBaralhoModel baralho_pai;
 }

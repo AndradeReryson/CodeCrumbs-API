@@ -2,6 +2,8 @@ package com.codecrumbs.demo.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,10 +34,12 @@ public class ProgressoQuizModel {
     private BigDecimal nota;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A06_Id_T01_Usuario", nullable = false)
     private UsuarioModel usuario;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A06_Id_T03_Quiz", nullable = false)
     private QuizModel quiz;
 }

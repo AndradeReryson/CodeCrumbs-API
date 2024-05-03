@@ -3,6 +3,8 @@ package com.codecrumbs.demo.model;
 import java.util.List;
 
 import com.codecrumbs.enumeracao.LinguagemEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,12 +41,15 @@ public class QuizModel {
     private LinguagemEnum linguagem;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A03_Criador_T01_Usuario", nullable = false)
     private UsuarioModel criador;
 
     @OneToMany(mappedBy = "quiz_pai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<QuizPerguntaModel> lista_perguntas;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProgressoQuizModel> lista_quizzes; 
 }

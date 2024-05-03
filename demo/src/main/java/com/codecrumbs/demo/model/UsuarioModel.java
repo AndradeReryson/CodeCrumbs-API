@@ -39,14 +39,18 @@ public class UsuarioModel{
     private CredenciaisModel credenciais;
 
     @OneToMany(mappedBy = "criador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<QuizModel> meus_quizzes;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProgressoQuizModel> quizzes_concluidos;
 
     @OneToMany(mappedBy = "criador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<FlashBaralhoModel> meus_baralhos;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProgressoExercicioModel> exercicios_concluidos;
 }

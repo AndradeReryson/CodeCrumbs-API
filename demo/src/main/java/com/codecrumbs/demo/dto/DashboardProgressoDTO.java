@@ -1,5 +1,7 @@
 package com.codecrumbs.demo.dto;
 
+import java.math.BigDecimal;
+
 import com.codecrumbs.enumeracao.LinguagemEnum;
 
 import jakarta.validation.constraints.NotBlank;
@@ -11,10 +13,10 @@ import lombok.Setter;
 public class DashboardProgressoDTO {
     
     @NotBlank
-    private Float percExerciciosConcluidos;
+    private BigDecimal percExerciciosConcluidos;
 
     @NotBlank
-    private Float percQuizzesConcluidos;
+    private BigDecimal percQuizzesConcluidos;
 
     @NotBlank
     private Integer totalFlashCards;

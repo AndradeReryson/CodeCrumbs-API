@@ -1,5 +1,7 @@
 package com.codecrumbs.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class ProgressoExercicioModel {
     private Integer id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A10_Id_T01_Usuario")
     private UsuarioModel usuario;
 }

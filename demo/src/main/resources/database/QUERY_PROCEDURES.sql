@@ -81,16 +81,15 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE proc_carregar_dashboard(
-IN param_id int
+IN param_id int,
+OUT porcent_quizzes decimal(5,2),
+OUT porcent_exercicios decimal(5,2),
+OUT quant_flashcards int,
+OUT linguagem_favorita ENUM('CSS', 'SQL')
 )
 root:BEGIN
 	DECLARE ref_total_quizzes int;
     DECLARE ref_total_exercicios int;
-    /* VALORES A SEREM RETORNADOS */
-    DECLARE porcent_quizzes decimal(5,2);
-    DECLARE porcent_exercicios decimal(5,2);
-    DECLARE quant_flashcards int;
-    DECLARE linguagem_favorita ENUM('CSS', 'SQL');
     
     SELECT COUNT(*) AS total_quizzes
     FROM t03_quiz 
@@ -120,12 +119,8 @@ root:BEGIN
     
     /* LINGUAGEM FAVORITA */
     SET linguagem_favorita = 1;
-    
-    SELECT porcent_quizzes, porcent_exercicios, quant_flashcards, linguagem_favorita;
 END $$
 DELIMITER ;
 
-SELECT ROUND((SELECT COUNT(*) FROM t06_progresso_usuario_quiz 
-    WHERE A06_Id_T01_Usuario = 1) / 30 * 100, 2) AS total;
     
-CALL proc_carregar_dashboard(1);
+CALL proc_carregar_dashboard(1, @out_porcent_quiz, @out_porcent_exerc, @out_quant_flashcards, @out_ling_fav);

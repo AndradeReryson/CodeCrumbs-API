@@ -1,5 +1,7 @@
 package com.codecrumbs.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class QuizRespostaModel {
     private Boolean isCorreta;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "A05_Id_T04_Quiz_Perguntas", nullable = false)
     private QuizPerguntaModel pergunta_pai;
 }
