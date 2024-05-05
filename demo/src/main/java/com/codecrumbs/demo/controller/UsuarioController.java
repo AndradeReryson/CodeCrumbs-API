@@ -119,7 +119,7 @@ public class UsuarioController {
             .withSchemaName("codecrumbs")
             .withProcedureName("proc_carregar_dashboard");
 
-        /* Executando a Query e passando um parametro (id do usuário) para a procedure */
+        /* Executando a Query e passando um parametro (id do usuário) para a procedure. O nome é o mesmo que está la na procedure */
         SqlParameterSource in = new MapSqlParameterSource().addValue("param_id", id);
         
         /* Com o resultado da query (in) mapeamos os parametros de saida OUT da procedure para um json

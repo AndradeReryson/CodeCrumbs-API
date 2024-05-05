@@ -80,6 +80,12 @@ END $$
 DELIMITER ;
 
 DELIMITER $$
+/* 	
+	Essa procedure é a unica que usa parametros de saida OUT
+	O Motivo é pois não há um modelo (tabela) para esse retorno, é necessário mapear um DTO com esses dados.
+    Para isso usei o JDBC ao inves do JPA, assim faço o chamado via SimpleJdbcCall
+    Para entender melhor, vá no UsuarioController da API e veja o método GET chamado "getDashboardInfo"
+*/
 CREATE PROCEDURE proc_carregar_dashboard(
 IN param_id int,
 OUT porcent_quizzes decimal(5,2),
@@ -122,5 +128,33 @@ root:BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE proc_buscar_quizzes_ref_usuario(
+IN param_id int,
+IN param_limit int,
+IN param_offset int
+)
+BEGIN
+	SELECT 
+	t03.A03_id AS 'id', 
+	t03.A03_titulo AS 'titulo', 
+    t03.A03_linguagem AS 'linguagem', 
+    t03.A03_Criador_T01_usuario AS 'id_criador',
+    CASE WHEN EXISTS (SELECT A06_Id FROM t06_progresso_usuario_quiz WHERE A06_Id_T01_Usuario = param_id AND A06_Id_T03_Quiz = t03.A03_Id)
+		THEN TRUE
+        ELSE FALSE
+	END AS 'concluido',
+    CASE WHEN EXISTS (SELECT A06_Nota_Quiz FROM t06_progresso_usuario_quiz WHERE A06_Id_T01_Usuario = param_id AND A06_Id_T03_Quiz = t03.A03_Id)
+		THEN A06_Nota_Quiz
+        ELSE NULL
+	END AS 'nota'
+	FROM t06_progresso_usuario_quiz t06
+	RIGHT JOIN t03_quiz t03 ON t06.A06_Id_T03_Quiz = t03.A03_Id
+    LIMIT param_limit
+    OFFSET param_offset;
+END $$
+DELIMITER ;
     
+/* TESTES */
 CALL proc_carregar_dashboard(1, @out_porcent_quiz, @out_porcent_exerc, @out_quant_flashcards, @out_ling_fav);
+CALL proc_buscar_quizzes_ref_usuario(1, 2, 2);

@@ -81,3 +81,5 @@ CREATE TABLE T10_Progresso_Usuario_Exercicio (
     FOREIGN KEY (A10_Id_T01_Usuario) REFERENCES T01_Usuario(A01_Id),
     FOREIGN KEY (A10_Id_T09_Exercicio) REFERENCES T09_Exercicio(A09_Id)
 );
+
+CALL proc_popular_banco_dummy();

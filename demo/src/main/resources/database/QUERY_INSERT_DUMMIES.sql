@@ -9,14 +9,16 @@ BEGIN
     DECLARE id_do_exercicio_teste int;
     
     /* POPULANDO T01 e T02 */
-	CALL proc_cadastrar_usuario("teste@hotmail.com", "12345678", "Teste");
-	SELECT A01_id FROM t01_usuario WHERE A01_Apelido = "Teste" INTO id_do_dummy;
+	CALL proc_cadastrar_usuario("admin@codecrumbs.com", "12345678", "Admin");
+	SELECT A01_id FROM t01_usuario WHERE A01_Apelido = "Admin" INTO id_do_dummy;
     
     /* POPULANDO T03 */
     INSERT INTO t03_quiz (A03_Titulo, A03_Linguagem, A03_Criador_T01_Usuario) 
     VALUES 
 		('TESTE Alinhamento de Elementos', 1, id_do_dummy),
-        ('TESTE Alterando cores', 1, id_do_dummy);
+        ('TESTE Alterando cores', 1, id_do_dummy),
+        ('TESTE Alinhamento de Elementos 2', id_do_dummy, 1),
+        ('TESTE Alterando cores 2', id_do_dummy, 1);
 	SELECT A03_Id from t03_quiz WHERE A03_Titulo = 'TESTE Alinhamento de Elementos' INTO id_do_quiz_teste;
     
     /* POPULANDO T04 */
