@@ -155,6 +155,7 @@ BEGIN
 END $$
 DELIMITER ;
     
+
 /* TESTES */
 CALL proc_carregar_dashboard(1, @out_porcent_quiz, @out_porcent_exerc, @out_quant_flashcards, @out_ling_fav);
 CALL proc_buscar_quizzes_ref_usuario(1, 2, 2);

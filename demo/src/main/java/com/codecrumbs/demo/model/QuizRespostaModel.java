@@ -14,10 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "t05_quiz_respostas")
 @Entity(name = "QuizRespostaModel")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -38,4 +40,14 @@ public class QuizRespostaModel {
     @JsonBackReference
     @JoinColumn(name = "A05_Id_T04_Quiz_Perguntas", nullable = false)
     private QuizPerguntaModel pergunta_pai;
+
+    /* */
+
+    public QuizRespostaModel(   String texto,
+                                Boolean isCorreta,
+                                QuizPerguntaModel pergunta_pai){
+        this.texto = texto;
+        this.isCorreta = isCorreta;
+        this.pergunta_pai = pergunta_pai;
+    }
 }

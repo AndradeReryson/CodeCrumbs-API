@@ -32,4 +32,10 @@ public class RestExceptionHandler {
         return ResponseEntity.status(401).body(error);
     }
 
+    /** ID DE USUARIO NÂO EXISTE */
+    @ExceptionHandler(InvalidUsuarioException.class)
+    public ResponseEntity<ApiError> handleInvalidUsuarioException(){
+        ApiError error = new ApiError(404, "Usuario informado nao existe", new Date());
+        return ResponseEntity.status(404).body(error);
+    }
 }

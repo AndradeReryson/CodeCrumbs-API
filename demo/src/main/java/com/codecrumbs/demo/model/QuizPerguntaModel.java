@@ -19,10 +19,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "t04_quiz_perguntas")
 @Entity(name = "QuizPerguntaModel")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -45,4 +47,11 @@ public class QuizPerguntaModel {
     @JsonManagedReference
     private List<QuizRespostaModel> lista_respostas;
     
+    /* */
+
+    public QuizPerguntaModel(   String enunciado,
+                                QuizModel quiz_pai){
+        this.enunciado = enunciado;
+        this.quiz_pai = quiz_pai;
+    }
 }

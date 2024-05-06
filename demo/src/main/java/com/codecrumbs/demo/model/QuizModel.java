@@ -20,10 +20,12 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name = "t03_quiz")
 @Entity(name = "QuizModel")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -52,4 +54,14 @@ public class QuizModel {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ProgressoQuizModel> lista_quizzes; 
+
+    /* */
+
+    public QuizModel(   String titulo,
+                        LinguagemEnum linguagem,
+                        UsuarioModel criador){
+        this.titulo = titulo;
+        this.linguagem = linguagem;
+        this.criador = criador;                       
+    }
 }
