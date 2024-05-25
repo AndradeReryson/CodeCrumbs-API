@@ -2,7 +2,6 @@ package com.codecrumbs.demo.dto;
 
 import java.util.List;
 
-import com.codecrumbs.demo.model.ProgressoQuizModel;
 import com.codecrumbs.demo.model.QuizPerguntaModel;
 import com.codecrumbs.enumeracao.LinguagemEnum;
 

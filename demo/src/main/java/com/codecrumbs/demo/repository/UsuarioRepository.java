@@ -10,6 +10,9 @@ import com.codecrumbs.demo.model.UsuarioModel;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Integer>{
     
+    @Query(value = "CALL proc_buscar_usuario_por_email(:email)", nativeQuery = true)
+    Optional<UsuarioModel> encontrarPorEmail(@Param("email" ) String email);
+
     @Query(value = "CALL proc_cadastrar_usuario(:email, :senha, :apelido)", nativeQuery = true)
     Optional<UsuarioModel> cadastrarUsuario(@Param("email") String email, 
                                             @Param("senha") String senha,

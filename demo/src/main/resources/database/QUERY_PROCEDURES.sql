@@ -33,7 +33,7 @@ root:BEGIN
 	/* Insere as credenciais do usuário na T02 usando o email, senha e o Id*/
 	INSERT INTO T02_Credenciais (A02_Id_T01_Usuario, A02_Email, A02_Senha)
 	VALUES (var_id, param_email, param_senha);
-	
+    
 	/* Retornando um model*/
 	SELECT * FROM t01_usuario WHERE A01_apelido = param_apelido;
 END $$
@@ -76,6 +76,27 @@ root:BEGIN
     END IF;
 
 	SELECT * FROM t01_usuario where A01_Id = id_do_cursor;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE proc_buscar_usuario_por_email(
+IN param_email varchar(255)
+)
+root:BEGIN
+	declare id_vinculado_email int;
+    
+    SELECT A02_Id_T01_Usuario 
+    FROM t02_credenciais 
+    WHERE A02_email = param_email
+    INTO id_vinculado_email;
+    
+    IF (id_vinculado_email IS NULL) then
+		SIGNAL sqlstate '45001' set message_text = "(45001) Erro: email não cadastrado";
+		LEAVE root;
+    END if;
+    
+    SELECT * FROM t01_usuario WHERE A01_id = id_vinculado_email;
 END $$
 DELIMITER ;
 
@@ -158,4 +179,5 @@ DELIMITER ;
 
 /* TESTES */
 CALL proc_carregar_dashboard(1, @out_porcent_quiz, @out_porcent_exerc, @out_quant_flashcards, @out_ling_fav);
-CALL proc_buscar_quizzes_ref_usuario(1, 2, 2);
+CALL proc_buscar_quizzes_ref_usuario(1, 1, 2);
+CALL proc_buscar_usuario_por_email('admin@codecrumbs.com')
