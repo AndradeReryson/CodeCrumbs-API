@@ -28,7 +28,7 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((request) -> request
-                                .requestMatchers(HttpMethod.GET, "/quizzes/**")
+                                .requestMatchers(HttpMethod.POST, "/usuarios/login")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

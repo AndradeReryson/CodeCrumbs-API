@@ -38,4 +38,14 @@ public class RestExceptionHandler {
         ApiError error = new ApiError(404, "Usuario informado nao existe", new Date());
         return ResponseEntity.status(404).body(error);
     }
+
+    /** ID DO QUIZ NÃO EXISTE */
+    public ResponseEntity<ApiError> handleInvalidQuizException(){
+        ApiError error = new ApiError(404, "Quiz informado nao existe", new Date());
+        return ResponseEntity.status(404).body(error);
+    }
+
+    /** ID DO FLASHCARD NÃO EXISTE */
+
+    /** ID DO EXERCICIO NÃO EXISTE */
 }

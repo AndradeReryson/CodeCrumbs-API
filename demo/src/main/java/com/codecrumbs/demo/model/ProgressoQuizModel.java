@@ -42,4 +42,10 @@ public class ProgressoQuizModel {
     @JsonBackReference
     @JoinColumn(name = "A06_Id_T03_Quiz", nullable = false)
     private QuizModel quiz;
+
+    public ProgressoQuizModel(BigDecimal nota, UsuarioModel usuario, QuizModel quiz) {
+        this.nota = nota;
+        this.usuario = usuario;
+        this.quiz = quiz;
+    }
 }

@@ -6,5 +6,4 @@ import com.codecrumbs.demo.model.ProgressoQuizModel;
 
 public interface ProgressoQuizRepository extends JpaRepository<ProgressoQuizModel, Integer>{
     
-    
 }

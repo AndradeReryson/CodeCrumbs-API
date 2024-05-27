@@ -19,12 +19,16 @@ import org.springframework.stereotype.Service;
 import com.codecrumbs.demo.dto.QuizComPerguntasDTO;
 import com.codecrumbs.demo.dto.QuizComProgressoDTO;
 import com.codecrumbs.demo.dto.QuizCreateDTO;
+import com.codecrumbs.demo.dto.ProgressoQuizCreateDTO;
 import com.codecrumbs.demo.dto.mapper.QuizMapper;
+import com.codecrumbs.demo.exceptions.InvalidQuizException;
 import com.codecrumbs.demo.exceptions.InvalidUsuarioException;
+import com.codecrumbs.demo.model.ProgressoQuizModel;
 import com.codecrumbs.demo.model.QuizModel;
 import com.codecrumbs.demo.model.QuizPerguntaModel;
 import com.codecrumbs.demo.model.QuizRespostaModel;
 import com.codecrumbs.demo.model.UsuarioModel;
+import com.codecrumbs.demo.repository.ProgressoQuizRepository;
 import com.codecrumbs.demo.repository.QuizPerguntaRepository;
 import com.codecrumbs.demo.repository.QuizRepository;
 import com.codecrumbs.demo.repository.QuizRespostaRepository;
@@ -33,8 +37,9 @@ import com.codecrumbs.demo.repository.UsuarioRepository;
 @Service
 public class QuizService {
     
+
     @Autowired
-    private QuizRepository repository;
+    private QuizRepository quizRepository;
 
     @Autowired
     private QuizPerguntaRepository perguntaRepository;
@@ -46,6 +51,9 @@ public class QuizService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private ProgressoQuizRepository progressoRepository;
+
+    @Autowired
     private QuizMapper mapper;
 
     /** 
@@ -55,9 +63,11 @@ public class QuizService {
     private JdbcTemplate jdbc;
 
 
+
+
     public List<QuizComPerguntasDTO> getAllQuizzes(){
         Pageable pageable = PageRequest.of(0, 16);
-        List<QuizModel> lista_model = repository.findAll(pageable).getContent();
+        List<QuizModel> lista_model = quizRepository.findAll(pageable).getContent();
         List<QuizComPerguntasDTO> lista_dto = new ArrayList<>();
 
         lista_model.forEach(model -> {
@@ -91,15 +101,17 @@ public class QuizService {
         
     }
 
-    public QuizComPerguntasDTO getQuizComPerguntas(Integer id_quiz){
-        Optional<QuizModel> model = repository.findById(id_quiz);
+    public Optional<QuizComPerguntasDTO> getQuizComPerguntas(Integer id_quiz){
+        Optional<QuizModel> model = quizRepository.findById(id_quiz);
+        QuizComPerguntasDTO dto = null;
 
         if(model.isPresent()){
-            QuizComPerguntasDTO dto = mapper.toQuizComPerguntasDTO(model.get());
-            return dto;
+            dto = mapper.toQuizComPerguntasDTO(model.get());
         }
 
-        return null;
+        Optional<QuizComPerguntasDTO> opt_dto = Optional.of(dto);
+
+        return opt_dto;
     }
 
     public QuizModel criarNovoQuiz(QuizCreateDTO dto){
@@ -110,7 +122,7 @@ public class QuizService {
         }
 
         // guardar o modelQuiz que a operação de Save() devolve, vamos precisar dele;
-        QuizModel newQuiz = repository.save(new QuizModel(dto.getTitulo(),
+        QuizModel newQuiz = quizRepository.save(new QuizModel(dto.getTitulo(),
                                                             dto.getLinguagem(),
                                                             criador.get()));
 
@@ -127,12 +139,44 @@ public class QuizService {
         });
         
         // agora vamos puxar novamente o novo quiz, que dessa vez vai vir com as chaves estrangeiras do banco corretamente
-        Optional<QuizModel> resultQuiz = repository.findById(newQuiz.getId());
+        Optional<QuizModel> resultQuiz = quizRepository.findById(newQuiz.getId());
 
         if(resultQuiz.isEmpty()){
            throw new IllegalStateException("Erro ao criar novo quiz");
         }
         
         return resultQuiz.get();
+    }
+
+    public Optional<ProgressoQuizModel> salvarProgressoQuiz(ProgressoQuizCreateDTO dto){
+        /** Pra fazer o SAVE com o JPA vamos precisar de:
+         *      - Model do Usuario;
+         *      - Model do Quiz
+         *      - Nota tirada
+          */
+
+        Optional<UsuarioModel> optUsuario = usuarioRepository.findById(dto.getId_usuario());
+
+            if(optUsuario.isEmpty()) {
+                throw new InvalidUsuarioException("Id de usuário não existe");
+            }
+
+        Optional<QuizModel> optQuiz = quizRepository.findById(dto.getId_quiz());
+
+            if(optQuiz.isEmpty()){
+                throw new InvalidQuizException("Id do quiz não existe");
+            }
+
+        // Juntando os dados necessários
+        UsuarioModel usuario = optUsuario.get();
+        QuizModel quiz = optQuiz.get();
+
+        ProgressoQuizModel modelProgresso = new ProgressoQuizModel(dto.getNota(), usuario, quiz);
+        
+        // usando o repository do progresso
+        ProgressoQuizModel retornoProgressoCriado = progressoRepository.save(modelProgresso);
+        Optional<ProgressoQuizModel> optProgresso = Optional.of(retornoProgressoCriado);
+
+        return optProgresso;
     }
 }

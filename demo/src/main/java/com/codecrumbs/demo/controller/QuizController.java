@@ -1,6 +1,7 @@
 package com.codecrumbs.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codecrumbs.demo.dto.ProgressoQuizCreateDTO;
 import com.codecrumbs.demo.dto.QuizComPerguntasDTO;
 import com.codecrumbs.demo.dto.QuizComProgressoDTO;
 import com.codecrumbs.demo.dto.QuizCreateDTO;
+import com.codecrumbs.demo.model.ProgressoQuizModel;
 import com.codecrumbs.demo.model.QuizModel;
 import com.codecrumbs.demo.service.QuizService;
 
@@ -52,8 +55,13 @@ public class QuizController {
 
     @GetMapping("{id_quiz}") 
     public ResponseEntity<QuizComPerguntasDTO> getQuizComPerguntas(@PathVariable("id_quiz") Integer id_quiz){
-        QuizComPerguntasDTO dto = quizService.getQuizComPerguntas(id_quiz);
-        return ResponseEntity.status(404).body(dto);
+        Optional<QuizComPerguntasDTO> dto = quizService.getQuizComPerguntas(id_quiz);
+        
+        if(dto.isPresent()){
+            return ResponseEntity.status(200).body(dto.get());
+        }
+
+        return ResponseEntity.status(400).body(null);
     }
 
     @Transactional
@@ -62,6 +70,18 @@ public class QuizController {
         QuizModel quiz_criado = quizService.criarNovoQuiz(dto);
 
         return ResponseEntity.status(201).body(quiz_criado);
+    }
+
+    @Transactional
+    @PostMapping("/progresso/salvar")
+    public ResponseEntity<ProgressoQuizModel> salvarProgresso(@RequestBody ProgressoQuizCreateDTO dto){
+        Optional<ProgressoQuizModel> optProgresso = quizService.salvarProgressoQuiz(dto);
+
+        if(optProgresso.isPresent()){
+            return ResponseEntity.status(201).body(optProgresso.get());
+        }
+
+        return ResponseEntity.status(303).body(optProgresso.get());
     }
 
 
