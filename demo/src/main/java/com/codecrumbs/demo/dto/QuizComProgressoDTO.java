@@ -27,9 +27,6 @@ public class QuizComProgressoDTO {
     private Integer id_criador;
 
     @NotBlank
-    private Boolean concluido;
-
-    @NotBlank
     private BigDecimal nota;
 
 }

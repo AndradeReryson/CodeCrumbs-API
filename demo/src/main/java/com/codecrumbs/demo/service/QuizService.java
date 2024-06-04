@@ -155,28 +155,43 @@ public class QuizService {
          *      - Nota tirada
           */
 
-        Optional<UsuarioModel> optUsuario = usuarioRepository.findById(dto.getId_usuario());
+        Optional<ProgressoQuizModel> optProgressoExistente = progressoRepository.findByQuizAndUserId(dto.getId_quiz(), dto.getId_usuario());
+
+        if(optProgressoExistente.isPresent()){
+            ProgressoQuizModel modelProgressoExistente = optProgressoExistente.get();
+        
+            if(modelProgressoExistente.getNota().compareTo(dto.getNota()) == -1){
+                modelProgressoExistente.setNota(dto.getNota());
+                progressoRepository.save(modelProgressoExistente);
+            }
+            
+
+            return Optional.of(modelProgressoExistente);
+        } else {
+            Optional<UsuarioModel> optUsuario = usuarioRepository.findById(dto.getId_usuario());
 
             if(optUsuario.isEmpty()) {
                 throw new InvalidUsuarioException("Id de usuário não existe");
             }
 
-        Optional<QuizModel> optQuiz = quizRepository.findById(dto.getId_quiz());
+            Optional<QuizModel> optQuiz = quizRepository.findById(dto.getId_quiz());
 
-            if(optQuiz.isEmpty()){
-                throw new InvalidQuizException("Id do quiz não existe");
+                if(optQuiz.isEmpty()){
+                    throw new InvalidQuizException("Id do quiz não existe");
+                }
+
+            // Juntando os dados necessários
+            UsuarioModel usuario = optUsuario.get();
+            QuizModel quiz = optQuiz.get();
+
+            ProgressoQuizModel modelProgresso = new ProgressoQuizModel(dto.getNota(), usuario, quiz);
+            
+            // usando o repository do progresso
+            ProgressoQuizModel retornoProgressoCriado = progressoRepository.save(modelProgresso);
+            Optional<ProgressoQuizModel> optProgresso = Optional.of(retornoProgressoCriado);
+
+            return optProgresso;
             }
-
-        // Juntando os dados necessários
-        UsuarioModel usuario = optUsuario.get();
-        QuizModel quiz = optQuiz.get();
-
-        ProgressoQuizModel modelProgresso = new ProgressoQuizModel(dto.getNota(), usuario, quiz);
         
-        // usando o repository do progresso
-        ProgressoQuizModel retornoProgressoCriado = progressoRepository.save(modelProgresso);
-        Optional<ProgressoQuizModel> optProgresso = Optional.of(retornoProgressoCriado);
-
-        return optProgresso;
     }
 }

@@ -50,7 +50,7 @@ public class UsuarioService {
         return lista_dtos;
     }
 
-    public UsuarioModel criarNovoUsuario(UsuarioCreateDTO dto){
+    public UsuarioBasicoDTO criarNovoUsuario(UsuarioCreateDTO dto){
         /**
          * A lógica de Cadastro está no banco, caso haja erro ao logar, o proprio MySQL vai mandar um erro, que está sendo pego aqui no Catch
          * Veja o arquivo "QUERY_PROCEDURES" na pasta resources/database 
@@ -58,8 +58,10 @@ public class UsuarioService {
         try{
             Optional<UsuarioModel> novoUsuario = repository.cadastrarUsuario(dto.getEmail(), dto.getSenha(), dto.getApelido());
             
+            
             if(novoUsuario.isPresent()){
-                return novoUsuario.get();
+                UsuarioBasicoDTO dtoBasico = mapper.toUsuarioBasicoDTO(novoUsuario.get());
+                return dtoBasico;
             }
             
             return null;

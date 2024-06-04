@@ -39,14 +39,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<String> criarNovoUsuario(@RequestBody @Valid UsuarioCreateDTO dto) throws SQLException{
-        UsuarioModel novoUsuario = usuarioService.criarNovoUsuario(dto);
+    public ResponseEntity<UsuarioBasicoDTO> criarNovoUsuario(@RequestBody @Valid UsuarioCreateDTO dto) throws SQLException{
+        UsuarioBasicoDTO novoUsuario = usuarioService.criarNovoUsuario(dto);
         
         if(novoUsuario != null){
-            return ResponseEntity.status(201).body("Cadastrado com Sucesso");
+            return ResponseEntity.status(201).body(novoUsuario);
         }
 
-        return ResponseEntity.status(201).body("Erro ao realizar cadastro");
+        return ResponseEntity.status(201).body(novoUsuario);
     }
 
     @PostMapping("/login")
