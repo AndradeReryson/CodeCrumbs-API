@@ -9,9 +9,16 @@
 CREATE DATABASE CodeCrumbs;
 USE CodeCrumbs;
 
+CREATE TABLE T00_Privilegios (
+	A00_Id INT PRIMARY KEY auto_increment,
+	A00_Privilegio varchar(20) not null
+);
+
 CREATE TABLE T01_Usuario (
 	A01_Id INT PRIMARY KEY auto_increment,
-    A01_Apelido VARCHAR(50) not null unique
+    A01_Apelido VARCHAR(50) not null unique,
+    A01_Id_T00_Privilegios int not null,
+    FOREIGN KEY (A01_Id_T00_Privilegios) REFERENCES T00_Privilegios(A00_Id)
 );
 
 CREATE TABLE T02_Credenciais (

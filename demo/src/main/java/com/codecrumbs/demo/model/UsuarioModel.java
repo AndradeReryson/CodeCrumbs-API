@@ -2,6 +2,7 @@ package com.codecrumbs.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -10,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -37,6 +39,11 @@ public class UsuarioModel{
     @OneToOne(mappedBy = "id_usuario")
     @JsonManagedReference
     private CredenciaisModel credenciais;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "A01_Id_T00_Privilegios", nullable = false)
+    @JsonManagedReference
+    private PrivilegioModel privilegio;
 
     @OneToMany(mappedBy = "criador", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

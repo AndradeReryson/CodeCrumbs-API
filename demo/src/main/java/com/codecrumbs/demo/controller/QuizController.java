@@ -46,10 +46,19 @@ public class QuizController {
      * Está sendo feito uma paginação, onde cada pagina vai ter 16 quizzes
      * 
      */
-    @GetMapping("ref/{id_usuario}/pagina/{page}")
+    @GetMapping("todos-quizzes/ref/{id_usuario}/lang/{linguagem}/pagina/{page}")
     public ResponseEntity<List<QuizComProgressoDTO>> getAllQuizzesComProgressoDoUsuario(@PathVariable("id_usuario") Integer id_usuario,
-                                                                                @PathVariable("page") Integer page){
-        List<QuizComProgressoDTO> lista = quizService.getAllQuizzesComProgressoDoUsuario(id_usuario, page);                                                
+                                                                                        @PathVariable("linguagem") String linguagem,
+                                                                                        @PathVariable("page") Integer page){
+        List<QuizComProgressoDTO> lista = quizService.getAllQuizzesComProgressoDoUsuario(id_usuario, linguagem, page);                                                
+        return ResponseEntity.status(200).body(lista);
+    }
+
+    @GetMapping("meus-quizzes/ref/{id_usuario}/lang/{linguagem}/pagina/{page}")
+    public ResponseEntity<List<QuizComProgressoDTO>> getMeusQuizzesComProgresso(@PathVariable("id_usuario") Integer id_usuario,
+                                                                                        @PathVariable("linguagem") String linguagem,
+                                                                                        @PathVariable("page") Integer page){
+        List<QuizComProgressoDTO> lista = quizService.getMeusQuizzesComProgresso(id_usuario, linguagem, page);                                                
         return ResponseEntity.status(200).body(lista);
     }
 

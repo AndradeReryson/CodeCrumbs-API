@@ -62,9 +62,6 @@ public class QuizService {
     @Autowired
     private JdbcTemplate jdbc;
 
-
-
-
     public List<QuizComPerguntasDTO> getAllQuizzes(){
         Pageable pageable = PageRequest.of(0, 16);
         List<QuizModel> lista_model = quizRepository.findAll(pageable).getContent();
@@ -77,8 +74,21 @@ public class QuizService {
         return lista_dto;
     }
 
-    public List<QuizComProgressoDTO> getAllQuizzesComProgressoDoUsuario(Integer id_usuario, Integer page){
+    public List<QuizComProgressoDTO> getAllQuizzesComProgressoDoUsuario(Integer id_usuario, String linguagem, Integer page){
         Integer quizzes_por_pagina = 16;
+        Integer codigo_linguagem;
+
+        switch (linguagem) {
+            case "CSS":
+                codigo_linguagem = 1; 
+                break;
+            case "SQL":
+                codigo_linguagem = 2;
+                break;
+            default:
+                codigo_linguagem = 1;
+                break;
+        }
 
         SimpleJdbcCall call = new SimpleJdbcCall(jdbc)
             .withSchemaName("codecrumbs")
@@ -87,6 +97,7 @@ public class QuizService {
         
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("param_id", id_usuario);
+        parametros.put("param_linguagem", codigo_linguagem);                // É o valor do enum das linguagens (CSS == 1, SQL == 2, ... etc)
         parametros.put("param_limit", quizzes_por_pagina);                  // LIMIT é a quantidade de resultados por pagina
         parametros.put("param_offset", (page - 1) * quizzes_por_pagina);    // OFFSET é quantos resultados ele deve pular, ou seja, a pagina controla o OFFSET. pagina 2 = pule os 16 primeiros;
         
@@ -99,6 +110,44 @@ public class QuizService {
         
         return lista;
         
+    }
+
+    public List<QuizComProgressoDTO> getMeusQuizzesComProgresso(Integer id_usuario, String linguagem, Integer page){
+        Integer quizzes_por_pagina = 16;
+        Integer codigo_linguagem;
+
+        switch (linguagem) {
+            case "CSS":
+                codigo_linguagem = 1; 
+                break;
+            case "SQL":
+                codigo_linguagem = 2;
+                break;
+            default:
+                codigo_linguagem = 1;
+                break;
+        }
+
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbc)
+            .withSchemaName("codecrumbs")
+            .withProcedureName("proc_buscar_meus_quizzes")
+            .returningResultSet("resultados", BeanPropertyRowMapper.newInstance(QuizComProgressoDTO.class));
+        
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("param_id", id_usuario);
+        parametros.put("param_linguagem", codigo_linguagem);                // É o valor do enum das linguagens (CSS == 1, SQL == 2, ... etc)
+        parametros.put("param_limit", quizzes_por_pagina);                  // LIMIT é a quantidade de resultados por pagina
+        parametros.put("param_offset", (page - 1) * quizzes_por_pagina);    // OFFSET é quantos resultados ele deve pular, ou seja, a pagina controla o OFFSET. pagina 2 = pule os 16 primeiros;
+        
+        SqlParameterSource in = new MapSqlParameterSource().addValues(parametros);
+
+        Map<String, Object> out = call.execute(in);
+
+        @SuppressWarnings("unchecked")
+        List<QuizComProgressoDTO> lista = (List<QuizComProgressoDTO>) out.get("resultados"); 
+    
+        return lista;
+
     }
 
     public Optional<QuizComPerguntasDTO> getQuizComPerguntas(Integer id_quiz){
@@ -147,7 +196,7 @@ public class QuizService {
         
         return resultQuiz.get();
     }
-
+ 
     public Optional<ProgressoQuizModel> salvarProgressoQuiz(ProgressoQuizCreateDTO dto){
         /** Pra fazer o SAVE com o JPA vamos precisar de:
          *      - Model do Usuario;
@@ -193,5 +242,10 @@ public class QuizService {
             return optProgresso;
             }
         
+    }
+
+    public QuizModel alterarQuiz(Integer id_quiz, QuizCreateDTO dto){
+        // TODO DO
+        return null;
     }
 }
